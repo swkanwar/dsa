@@ -52,8 +52,33 @@ func TopK(nums []int, k int) []int {
 	return result
 }
 
+// BottomK returns the k smallest elements from the input slice using a min-heap with negated priorities.
+func BottomK(nums []int, k int) []int {
+	if k <= 0 {
+		return []int{}
+	}
+	h := &EntryHeap{}
+	heap.Init(h)
+
+	for _, num := range nums {
+		// Using negative priority to simulate a max-heap behavior using a min-heap
+		heap.Push(h, entry{value: num, priority: -num})
+		if h.Len() > k {
+			heap.Pop(h)
+		}
+	}
+
+	n := h.Len()
+	result := make([]int, n)
+	for i := n - 1; i >= 0; i-- {
+		result[i] = heap.Pop(h).(entry).value
+	}
+	return result
+}
+
 func main() {
 	nums := []int{3, 2, 3, 1, 2, 4, 5, 5, 6}
 	k := 4
 	fmt.Printf("Top %d elements: %v\n", k, TopK(nums, k))
+	fmt.Printf("Bottom %d elements: %v\n", k, BottomK(nums, k))
 }
