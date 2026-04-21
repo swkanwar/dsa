@@ -5,18 +5,23 @@ import (
 	"fmt"
 )
 
-// IntHeap is a min-heap of ints.
-type IntHeap []int
-
-func (h IntHeap) Len() int           { return len(h) }
-func (h IntHeap) Less(i, j int) bool { return h[i] < h[j] }
-func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-
-func (h *IntHeap) Push(x interface{}) {
-	*h = append(*h, x.(int))
+type entry struct {
+	value    int
+	priority int
 }
 
-func (h *IntHeap) Pop() interface{} {
+// EntryHeap is a min-heap of entries.
+type EntryHeap []entry
+
+func (h EntryHeap) Len() int           { return len(h) }
+func (h EntryHeap) Less(i, j int) bool { return h[i].priority < h[j].priority }
+func (h EntryHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+
+func (h *EntryHeap) Push(x interface{}) {
+	*h = append(*h, x.(entry))
+}
+
+func (h *EntryHeap) Pop() interface{} {
 	old := *h
 	n := len(old)
 	x := old[n-1]
@@ -29,11 +34,11 @@ func TopK(nums []int, k int) []int {
 	if k <= 0 {
 		return []int{}
 	}
-	h := &IntHeap{}
+	h := &EntryHeap{}
 	heap.Init(h)
 
 	for _, num := range nums {
-		heap.Push(h, num)
+		heap.Push(h, entry{value: num, priority: num})
 		if h.Len() > k {
 			heap.Pop(h)
 		}
@@ -42,7 +47,7 @@ func TopK(nums []int, k int) []int {
 	n := h.Len()
 	result := make([]int, n)
 	for i := n - 1; i >= 0; i-- {
-		result[i] = heap.Pop(h).(int)
+		result[i] = heap.Pop(h).(entry).value
 	}
 	return result
 }
