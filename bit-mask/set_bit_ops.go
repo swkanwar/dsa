@@ -24,7 +24,7 @@ func FlipBit(num, pos int) int {
 
 func main() {
 	num := 10 // Binary: 1010
-	pos := 1
+	pos := 1  // pos is Zero-indexed
 
 	// Check if a bit is set
 	isSet := IsSet(num, pos)
